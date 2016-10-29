@@ -1,0 +1,21 @@
+#!/bin/bash
+function pullRequest() {
+    echo Enter username
+    read USERNAME
+    echo Enter pull request title
+    read TITLE
+    echo Enter pull request body
+    read BODY
+    echo Enter head
+    read HEAD
+    echo Enter base
+    read BASE
+    OUT=$(git remote -v | sed -e 's#https://github.com/\(.*\).git#\1#' | sed -n 1p)
+    MID=$(echo $OUT | sed -e 's#origin\(.*\)(fetch)#\1#')
+    BEG="https://api.github.com/repos/"
+    END="/pulls"
+    HASWHITESPACE=$BEG$MID$END
+    URL="$(echo -e "${HASWHITESPACE}" | tr -d '[[:space:]]')"
+    echo $NOWHITE
+    curl -i -u "$USERNAME" -H "Content-Type: application/json" -X POST -d '{"title": "'"$TITLE"'", "body": "'"$BODY"'", "head": "'"$HEAD"'", "base": "'"$BASE"'"}' $URL
+}
